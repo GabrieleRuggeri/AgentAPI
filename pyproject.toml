@@ -1,7 +1,43 @@
+[build-system]
+requires = ["hatchling>=1.21"]
+build-backend = "hatchling.build"
+
 [project]
-name = "llm-api"
+name = "agent-api"
 version = "0.1.0"
-description = "Add your description here"
+description = "Framework for exposing LangGraph agents as configurable APIs"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "fastapi>=0.110",
+    "uvicorn[standard]>=0.30",
+    "pydantic>=2.5",
+    "pyyaml>=6.0",
+    "python-dotenv>=1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "httpx>=0.27",
+    "pytest>=8.0",
+]
+
+[project.scripts]
+agent-api = "agent_api.cli:main"
+
+[tool.uvicorn]
+factory = true
+app = "agent_api.server:create_app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["agent_api"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "agent_api",
+    "README.md",
+    "pyproject.toml",
+    "examples",
+    "agent_api.yaml",
+    "tests",
+]
