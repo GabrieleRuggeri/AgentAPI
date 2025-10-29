@@ -93,7 +93,7 @@ def _add_route(app: FastAPI, route: RouteConfig, agent: Any) -> None:
             f"Configured agent method '{route.agent_method}' not found on agent"
         )
 
-    async def handler(payload: request_model | Dict[str, Any] | None = Body(None)) -> Any:  # type: ignore[name-defined]
+    async def handler(payload=Body(None)) -> Any:
         kwargs = _build_call_kwargs(route, payload)
         result = await _invoke_callable(agent_callable, **kwargs)
 
@@ -120,6 +120,11 @@ def _add_route(app: FastAPI, route: RouteConfig, agent: Any) -> None:
 
         payload_out = _apply_response_model(route, response_model, result)
         return JSONResponse(payload_out)
+
+    if request_model is not None:
+        handler.__annotations__["payload"] = request_model  # type: ignore[index]
+    else:
+        handler.__annotations__["payload"] = Dict[str, Any] | None  # type: ignore[index]
 
     app.add_api_route(
         route.path,

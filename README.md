@@ -12,18 +12,20 @@ The Agent API framework turns any LangGraph-compatible agent into a fully docume
 
 ## 1. Set up the project
 
-1. Create and activate a virtual environment.
+1. Create and activate a virtual environment (using [`uv`](https://github.com/astral-sh/uv) or the standard library).
 
    ```bash
-   python -m venv .venv
+   uv venv  # or: python -m venv .venv
    source .venv/bin/activate
    ```
 
 2. Install the framework and development tooling (includes pytest and HTTPX for testing).
 
    ```bash
-   pip install -e .[dev]
+   uv pip install -e .[dev]
    ```
+
+   If you prefer `pip`, the same command works as `pip install -e .[dev]`.
 
 ## 2. Describe your API
 
@@ -69,6 +71,22 @@ routes:
     stream: true
     stream_media_type: text/event-stream
 ```
+
+## 3. Use in another project
+
+Add the library to another project with uv:
+
+```bash
+uv add agent-api
+```
+
+Then import the helpers you need:
+
+```python
+from agent_api import create_app, load_config
+```
+
+This gives you the `FastAPI` application factory plus the utilities for loading route and agent definitions from YAML.
 
 - `app` metadata configures the FastAPI title, version, description, and documentation endpoints. Keep `docs_url` and `openapi_url` set to serve Swagger UI and the OpenAPI schema; set either to `null` to disable it.
 - `agent` describes how to instantiate your agent. `import_path` can reference a class or factory, and `init_kwargs` are passed directly during construction.

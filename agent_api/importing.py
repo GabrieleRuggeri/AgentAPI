@@ -16,8 +16,9 @@ class ImportErrorMessage(RuntimeError):
 class ImportString:
     """Representation of an import string.
 
-    The import string is expected in the ``"module.submodule:attribute"`` form.
-    The attribute part may contain dots for nested attributes.
+    The import string is expected in the ``"module.submodule:attribute"`` form by
+    default, but ``"module.submodule.attribute"`` is also accepted for
+    convenience. The attribute part may contain dots for nested attributes.
     """
 
     value: str
@@ -39,13 +40,30 @@ class ImportString:
         return obj
 
     def _split(self) -> tuple[str, str]:
-        if ":" not in self.value:
+        if ":" in self.value:
+            module_path, attribute = self.value.split(":", 1)
+            if not module_path or not attribute:
+                msg = (
+                    "Import strings must include both module and attribute parts; "
+                    f"got '{self.value}'"
+                )
+                raise ImportErrorMessage(msg)
+            return module_path, attribute
+
+        if "." not in self.value:
             msg = (
-                "Import strings must be in 'module.submodule:attribute' form; "
+                "Import strings must include a module path and attribute separated "
+                f"by ':' or '.'; got '{self.value}'"
+            )
+            raise ImportErrorMessage(msg)
+
+        module_path, attribute = self.value.rsplit(".", 1)
+        if not module_path or not attribute:
+            msg = (
+                "Import strings must include both module and attribute parts; "
                 f"got '{self.value}'"
             )
             raise ImportErrorMessage(msg)
-        module_path, attribute = self.value.split(":", 1)
         return module_path, attribute
 
 
