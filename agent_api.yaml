@@ -1,0 +1,38 @@
+app:
+  title: "Echo Agent API"
+  version: "0.1.0"
+  description: "Example API generated from a LangGraph style agent"
+  docs_url: "/docs"
+  openapi_url: "/openapi.json"
+
+agent:
+  import_path: "examples.agents:create_agent"
+  init_kwargs:
+    prefix: "Echo"
+
+routes:
+  - name: invoke
+    path: /invoke
+    method: POST
+    summary: "Invoke the agent synchronously"
+    description: "Calls the agent's invoke method with the provided payload."
+    agent_method: invoke
+    request_model: "agent_api.schemas.InvokeRequest"
+    response_model: "agent_api.schemas.InvokeResponse"
+    parameter_mapping:
+      input: input
+      conversation: conversation
+      config: config
+    response_envelope: result
+
+  - name: stream
+    path: /stream
+    method: POST
+    summary: "Stream tokens from the agent"
+    description: "Streams incremental events from the agent's stream method."
+    agent_method: stream
+    request_model: "agent_api.schemas.InvokeRequest"
+    parameter_mapping:
+      input: input
+    stream: true
+    stream_media_type: text/event-stream
