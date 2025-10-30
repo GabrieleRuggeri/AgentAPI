@@ -175,6 +175,14 @@ agent = create_agent(prefix="Echo")
 app = create_app(config=config, agent=agent)
 ```
 
+## Consume
+Steps:
+
+- uv init in target folder
+- uv add path_to_agent_api
+- uv sync
+- uv run startup_command
+
 ## Testing and quality checks
 
 Run the automated test suite and bytecode compilation check before shipping changes:
