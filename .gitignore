@@ -8,3 +8,13 @@ wheels/
 
 # Virtual environments
 .venv
+uv.lock
+
+# IDE files
+.vscode/
+
+# distribution files
+*.egg
+*.egg-info/
+.eggs/
+dist/
