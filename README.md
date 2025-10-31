@@ -77,7 +77,9 @@ routes:
 Add the library to another project with uv:
 
 ```bash
-uv add agent-api
+uv init in target folder
+uv add path_to_agent_api
+uv sync
 ```
 
 Then import the helpers you need:
@@ -101,7 +103,7 @@ Schemas for the example configuration are available in [`agent_api/schemas.py`](
 Start Uvicorn with the provided application factory:
 
 ```bash
-uvicorn agent_api.server:create_app --reload
+uv run uvicorn agent_api.server:create_app --reload
 ```
 
 The server automatically loads configuration from `agent_api.yaml` (or the path indicated by `AGENT_API_CONFIG`) and registers every configured route. Swagger UI is served at `http://localhost:8000/docs` and the OpenAPI schema at `http://localhost:8000/openapi.json` when these URLs are enabled in the configuration.
@@ -174,14 +176,6 @@ config = Config.from_mapping(config_data)
 agent = create_agent(prefix="Echo")
 app = create_app(config=config, agent=agent)
 ```
-
-## Consume
-Steps:
-
-- uv init in target folder
-- uv add path_to_agent_api
-- uv sync
-- uv run startup_command
 
 ## Testing and quality checks
 
